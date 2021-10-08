@@ -120,7 +120,7 @@ docker restart shib-sp
 Accessing the app
 ===
 
-Open up <http://localhost/uidapp/> and click on the "Show uid" submit button.
+Open up <https://localhost/uidapp/> and click on the "Show uid" submit button.
 If it works, the current user id is shown.
 
 References
