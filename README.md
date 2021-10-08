@@ -1,21 +1,14 @@
 Sample Shibboleth integration via AJP
 ===
 
-This sample servlet-based Calculator shows how to configure a Shibboleth SP for SAML
-SSO, using [environment variables](https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess#AttributeAccess-ServerVariables) instead of HTTP headers to pass information to the
-app. This is the recommended solution for security reasons, see
-<https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335062/Apache>, parameters
-`ShibUseEnvironment` and `ShibUseHeaders` for more information.
+This sample servlet shows how to configure a Shibboleth SP for SAML SSO, using
+[environment variables](https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335257/AttributeAccess#AttributeAccess-ServerVariables) instead of HTTP headers to pass information to the app. This is the recommended solution
+for security reasons, see <https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2065335062/Apache>,
+parameters `ShibUseEnvironment` and `ShibUseHeaders` for more information.
 
 The AJP protocol in conjunction with the Apache HTTPD module [mod_proxy_ajp](https://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.html)
 is the recommended way to send environment variables to a Java app, see
 <https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2067400159/JavaHowTo>. Here we use Apache 2.4, where the `mod_proxy_ajp` is installed by default.
-
-Status
-===
-
-The AJP integration is currently working on JBoss EAP 7.3.0, but it does *not* work
-on neither Wildfly 24.0.1 nor JBoss EAP 7.4.0.
 
 How it works
 ===
@@ -55,7 +48,8 @@ and extract it to `~/wildfly-24.0.1.Final/`.
 Issue the following command from a CLI tab:
 
 ```bash
-export JBOSS_HOME=~/wildfly-24.0.1.Final && $JBOSS_HOME/bin/standalone.sh
+export JBOSS_HOME=~/wildfly-24.0.1.Final && $JBOSS_HOME/bin/standalone.sh \
+  -Dio.undertow.ajp.allowedRequestAttributesPattern="uid"
 ```
 
 Issue the following command from another tab:
@@ -80,44 +74,7 @@ export JBOSS_HOME=~/wildfly-24.0.1.Final && $JBOSS_HOME/bin/jboss-cli.sh
 Build and deploy the servlet:
 
 ```bash
-export JBOSS_HOME=~/wildfly-24.0.1.Final && mvn clean install && cp target/mycalcwebapp.war $JBOSS_HOME/standalone/deployments
-```
-
-Using JBoss EAP
-===
-
-[Download JBoss EAP 7.3.0](https://developers.redhat.com/content-gateway/file/jboss-eap-7.3.0.zip)
-and extract it to `~/jboss-eap-7.3/`.
-
-Issue the following command from a CLI tab:
-
-```bash
-export JBOSS_HOME=~/jboss-eap-7.3 && $JBOSS_HOME/bin/standalone.sh
-```
-
-Issue the following command from another tab:
-
-```bash
-export JBOSS_HOME=~/jboss-eap-7.3 && $JBOSS_HOME/bin/jboss-cli.sh
-[disconnected /] connect
-[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=ajp:add(port=8009)
-{
-    "outcome" => "failed",
-    "failure-description" => "WFLYCTL0212: Duplicate resource [
-    (\"socket-binding-group\" => \"standard-sockets\"),
-    (\"socket-binding\" => \"ajp\")
-]",
-    "rolled-back" => true
-}
-
-[standalone@localhost:9990 /] /subsystem=undertow/server=default-server/ajp-listener=myListener:add(socket-binding=ajp, scheme=http, enabled=true)
-{"outcome" => "success"}
-```
-
-Build and deploy the servlet:
-
-```bash
-export JBOSS_HOME=~/jboss-eap-7.3 && mvn clean install && cp target/mycalcwebapp.war $JBOSS_HOME/standalone/deployments
+export JBOSS_HOME=~/wildfly-24.0.1.Final && mvn clean install && cp target/*.war $JBOSS_HOME/standalone/deployments
 ```
 
 ## Creating the server private key and SSL certificate
@@ -163,7 +120,8 @@ docker restart shib-sp
 Accessing the app
 ===
 
-Open up <https://localhost/mycalcwebapp/>. If it works, the current user id is shown at the bottom of the page.
+Open up <http://localhost/uidapp/> and click on the "Show uid" submit button.
+If it works, the current user id is shown.
 
 References
 ===
