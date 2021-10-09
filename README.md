@@ -10,8 +10,7 @@ The AJP protocol in conjunction with the Apache HTTPD module [mod_proxy_ajp](htt
 is the recommended way to send environment variables to a Java app, see
 <https://shibboleth.atlassian.net/wiki/spaces/SP3/pages/2067400159/JavaHowTo>. Here we use Apache 2.4, where the `mod_proxy_ajp` is installed by default.
 
-How it works
-===
+# How it works
 
 Shibboleth reads attributes from the SAML claims via `attribute-map.xml`, for example:
 
@@ -33,14 +32,7 @@ At this point, the servlet can read the `uid` attribute from the incoming reques
 request.getAttribute("uid")
 ```
 
-In this sample project, the JavaScript code displays the `uid` on the page:
-
-```javascript
-document.getElementById("uid").innerHTML = json.uid;
-```
-
-Using WildFly
-===
+# Installing WildFly
 
 [Download WildFly 24.0.1 Final](https://download.jboss.org/wildfly/24.0.1.Final/wildfly-24.0.1.Final.zip)
 and extract it to `~/wildfly-24.0.1.Final/`.
@@ -71,13 +63,13 @@ export JBOSS_HOME=~/wildfly-24.0.1.Final && $JBOSS_HOME/bin/jboss-cli.sh
 {"outcome" => "success"}
 ```
 
-Build and deploy the servlet:
+# Building and deploying the servlet
 
 ```bash
 export JBOSS_HOME=~/wildfly-24.0.1.Final && mvn clean install && cp target/*.war $JBOSS_HOME/standalone/deployments
 ```
 
-## Creating the server private key and SSL certificate
+# Creating the server private key and SSL certificate
 
 Create the private key `localhost.key` and the self-signed SSL certificate `localhost.crt` using
 [mkcert](https://github.com/FiloSottile/mkcert):
@@ -117,14 +109,12 @@ docker cp app.conf shib-sp:/etc/httpd/conf.d/
 docker restart shib-sp
 ```
 
-Accessing the app
-===
+# Accessing the app
 
 Open up <https://localhost/uidapp/> and click on the "Show uid" submit button.
 If it works, the current user id is shown.
 
-References
-===
+# References
 
 * <https://devcenter.heroku.com/articles/ssl-certificate-self>
 * <https://hub.docker.com/_/httpd>
