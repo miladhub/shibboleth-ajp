@@ -41,7 +41,7 @@ Issue the following command from a CLI tab:
 
 ```bash
 export JBOSS_HOME=~/wildfly-24.0.1.Final && $JBOSS_HOME/bin/standalone.sh \
-  -Dio.undertow.ajp.allowedRequestAttributesPattern="uid"
+  -Dio.undertow.ajp.allowedRequestAttributesPattern="uid|eduPersonAffiliation|email"
 ```
 
 Issue the following command from another tab:
@@ -111,7 +111,7 @@ docker restart shib-sp
 
 # Accessing the app
 
-Open up <https://localhost/uidapp/> and click on the "Show uid" submit button.
+Open up <https://localhost/infoapp/> and click on the "Show user info" submit button.
 If it works, the current user id is shown.
 
 # References
